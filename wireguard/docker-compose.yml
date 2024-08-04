@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000  # Adjust to match your Pi's user id, usually 1000 for default pi user
+      - PGID=1000  # Adjust to match your Pi's group id
+      - TZ=Europe/Lisbon
+      - SERVERURL=auto  # Auto-detects the IP or you can use your public IP/domain
+      - SERVERPORT=51820  # Default port, change if needed
+      - PEERS=1  # Number of peers to create configs for, increase if needed
+      - PEERDNS=auto  # DNS to push to clients
+      - INTERNAL_SUBNET=10.13.13.0  # Custom subnet for VPN
+    volumes:
+      - /path/to/your/config:/config  # Ensure to change the path
+      - /lib/modules:/lib/modules
+    ports:
+      - 51820:51820/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+
